@@ -1,0 +1,33 @@
+.weather-error {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff3f3;
+    border: 1px solid #ffcdd2;
+    border-radius: 8px;
+}
+
+.error-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.error-icon {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: #d32f2f;
+    font-size: 1.1em;
+    margin: 10px 0;
+}
+
+.error-help {
+    color: #666;
+    font-size: 0.9em;
+    margin: 5px 0;
+} 

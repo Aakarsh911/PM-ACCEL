@@ -3,6 +3,7 @@ import WeatherSearch from './WeatherSearch';
 import CurrentWeather from './CurrentWeather';
 import ForecastWeather from './ForecastWeather';
 import WeatherError from './WeatherError';
+import WeatherComparison from './WeatherComparison';
 import './WeatherApp.css';
 
 const WeatherApp = () => {
@@ -10,6 +11,9 @@ const WeatherApp = () => {
     const [forecastData, setForecastData] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [comparisonMode, setComparisonMode] = useState(false);
+    const [secondLocation, setSecondLocation] = useState('');
+    const [secondWeatherData, setSecondWeatherData] = useState(null);
 
     const fetchLocationCoordinates = async (location) => {
         const response = await fetch(
@@ -22,7 +26,7 @@ const WeatherApp = () => {
         return data.results[0];
     };
     
-    const fetchWeatherData = async (location) => {
+    const fetchWeatherData = async (location, isSecondLocation = false) => {
         setLoading(true);
         setError(null);
         try {
@@ -40,7 +44,6 @@ const WeatherApp = () => {
             }
             
             const weatherData = await weatherResponse.json();
-            console.log('Weather Data:', weatherData); // Debug log
             
             // Format the data for our components
             const currentWeather = {
@@ -76,19 +79,39 @@ const WeatherApp = () => {
                 }))
             };
             
-            setWeatherData(currentWeather);
-            setForecastData(forecast);
+            if (isSecondLocation) {
+                setSecondWeatherData(currentWeather);
+            } else {
+                setWeatherData(currentWeather);
+                setForecastData(forecast);
+            }
         } catch (err) {
-            console.error('Error:', err); // Debug log
             setError(err.message);
-            setWeatherData(null);
-            setForecastData(null);
+            if (isSecondLocation) {
+                setSecondWeatherData(null);
+            } else {
+                setWeatherData(null);
+                setForecastData(null);
+            }
         }
         setLoading(false);
     };
 
     const handleLocationSubmit = (location) => {
-        fetchWeatherData(location);
+        if (comparisonMode) {
+            setSecondLocation(location);
+            fetchWeatherData(location, true);
+        } else {
+            fetchWeatherData(location);
+        }
+    };
+
+    const toggleComparisonMode = () => {
+        setComparisonMode(!comparisonMode);
+        if (!comparisonMode) {
+            setSecondWeatherData(null);
+            setSecondLocation('');
+        }
     };
 
     const getCurrentLocation = () => {
@@ -223,7 +246,15 @@ const WeatherApp = () => {
     return (
         <div className="weather-app">
             <h1>Weather Forecast</h1>
-            <WeatherSearch onLocationSubmit={handleLocationSubmit} onGetCurrentLocation={getCurrentLocation} />
+            <div className="controls">
+                <WeatherSearch onLocationSubmit={handleLocationSubmit} onGetCurrentLocation={getCurrentLocation} />
+                <button 
+                    className={`comparison-toggle ${comparisonMode ? 'active' : ''}`}
+                    onClick={toggleComparisonMode}
+                >
+                    {comparisonMode ? 'Exit Comparison' : 'Compare Locations'}
+                </button>
+            </div>
             
             {loading && <div className="loading">Loading...</div>}
             {error && <WeatherError message={error} />}
@@ -231,7 +262,15 @@ const WeatherApp = () => {
             {weatherData && (
                 <div className="weather-content">
                     <CurrentWeather data={weatherData} />
-                    {forecastData && <ForecastWeather data={forecastData} />}
+                    {!comparisonMode && forecastData && <ForecastWeather data={forecastData} />}
+                    {comparisonMode && secondWeatherData && (
+                        <WeatherComparison 
+                            location1={weatherData.name}
+                            location2={secondLocation}
+                            weather1={weatherData}
+                            weather2={secondWeatherData}
+                        />
+                    )}
                 </div>
             )}
         </div>

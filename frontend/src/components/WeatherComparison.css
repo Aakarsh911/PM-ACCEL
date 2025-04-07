@@ -1,0 +1,79 @@
+.weather-comparison {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.weather-comparison h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.comparison-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+
+.location-header {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+}
+
+.location-name {
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+.location-name:first-child {
+    grid-column: 2;
+}
+
+.location-name:last-child {
+    grid-column: 3;
+}
+
+.comparison-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.metric-label {
+    font-weight: 500;
+    color: #666;
+    display: flex;
+    align-items: center;
+}
+
+.metric-value {
+    text-align: center;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.metric-value.higher {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #2e7d32;
+}
+
+.metric-value.lower {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #c62828;
+}
+
+.metric-value.equal {
+    background-color: rgba(158, 158, 158, 0.1);
+    color: #616161;
+} 
